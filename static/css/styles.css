@@ -1,0 +1,114 @@
+.textheader {
+     margin: 0 auto;
+}
+
+h1 {
+    font-size: 50px;
+    text-align: center;
+}
+input {
+    margin: .2rem;
+}
+
+.full {
+  width: 100%;
+}
+
+#infotext {
+    text-align: justify;
+    width: 100%;
+    font-size:16px;
+}
+
+.x-axis line, .x-axis path { stroke: #fff; }
+.left, .right {
+  width: 50%;
+  display:block;
+  float: left;
+}
+.right {
+  width: 50%;
+  display:block;
+  float: right;
+}
+body {
+    font-family: 'IBM Plex Sans', sans-serif;
+	padding: 20px;
+	 line-height: 1.5;
+}
+#radio_buttons {
+    width:100%;
+    margin : 0;
+}
+#left_radio {
+    width: 50%;
+    margin: 0;
+    float: left;
+}
+#right_radio {
+    width: 50%;
+    margin: 0;
+    float: left;
+}
+#left-chart {
+    width: 80%;
+    margin: 0;
+    float: left;
+}
+#right-chart {
+    width: 20%;
+    margin: 0;
+    float: left;
+}
+.info {
+	line-height: 1.0;
+}
+#amount {
+	font-size: 15px;
+}
+
+.amount {
+	font-size: 15px;
+}
+
+.header {
+	font-size: 30px;
+	font-weight: bold;
+}
+.button:hover {
+    background-color:#ff8299;
+}
+
+#slider-range-background {
+    background: linear-gradient(to right, red 0%, green 100%);
+}
+
+.tooltip {
+	position: absolute;
+	font-size: 12px;
+	border-radius: 20px;
+	background-color: white;
+	border-style: solid;
+	border-color: grey;
+	height: auto;
+	width: auto;
+	padding: 5px;
+	z-index: 2;
+}
+
+.button {
+  /*font-family: 'Cabin', sans-serif;*/
+  display: inline-block;
+  border-radius: 20px;
+  border-style: solid;
+  background-color: white;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  padding-top:5px;
+  padding-bottom:5px;
+  padding-right:10px;
+  font-size: 15px;
+  padding-left:-4px;
+}
+

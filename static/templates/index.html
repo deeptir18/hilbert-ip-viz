@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hilbert Curves</title>
+    <script src="https://unpkg.com/d3-fetch"></script>
+    <script src='//unpkg.com/ip.js'></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+    <script src="https://unpkg.com/d3fc@14.0.27/build/d3fc.js"></script>
+    <script src="https://unpkg.com/d3-hilbert"></script>
+    <script src='https://unpkg.com/hilbert-chart'></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        
+    <script src="/static/js/slider.js"></script>
+    <script src="/static/js/ips.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <link rel="stylesheet" href="/static/css/styles.css">
+  </head>
+        <h1>Hilbert Curves</h1>
+    <body>
+        <div id="infotext">
+            <p>Welcome to the IP scan difference tool. This visualization is
+            intended to help display "differences" in scans as seen from
+            different scan origin locations. The original dataset includes a
+            list of IPs and whether each of the origin locations below "saw"
+            that IP in its corresponding scan. Each square in the map below summarizes the
+            difference between any two locations aggregated at the /8 level by
+            displaying the 1 minus the aggregate IOU (intersection over union)
+            for the scans. By clicking on a /8 box, a new map appears (if you
+            scroll down) showing
+            the aggregate difference for each /16 under the /8. Clicking on a
+            box in the /16 map renders another map below displaying the difference for each /24.
+            Finally, clicking a
+            box on the 3rd square renders a color-ed map of 256 IPs within a
+            particular /24, showing whether both, one or neither of the two
+            locations saw a particular IP. Pink squares show regions or IPs
+            that neither region saw in their scans. Choosing the "same" location to diff
+            just renders the number of IPs divided by the total number of IPs
+            under that prefix (e.g. 256*256*256 for any /8).</p>
+        </div>
+        <div id="radio_buttons">
+        <div id="left_radio">
+            <p>Select location A to diff:</p>
+            <div>
+                <input type="radio" id="australia" name="locA" value="australia" checked>
+                <label for="australia">Australia</label>
+            </div>
+
+            <div>
+                <input type="radio" id="brazil" name="locA" value="brazil">
+                    <label for="brazil">Brazil</label>
+            </div>
+
+            <div>
+                <input type="radio" id="censys" name="locA" value="censys">
+                <label for="censys">Censys</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="germany" name="locA" value="germany">
+                <label for="germany">Germany</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="japan" name="locA" value="japan">
+                <label for="japan">Japan</label>
+            </div>
+
+            <div>
+                <input type="radio" id="stanford1" name="locA" value="stanford1">
+                <label for="stanford1">Stanford1</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="stanford64" name="locA"
+                value="stanford64">
+                <label for="stanford64">Stanford64</label>
+            </div>
+        </div>
+            <div id="right_radio">
+            <p>Select location B to diff:</p>
+            <div>
+                <input type="radio" id="australia" name="locB" value="australia">
+                <label for="australia">Australia</label>
+            </div>
+
+            <div>
+                <input type="radio" id="brazil" name="locB" value="brazil"
+                checked>
+                    <label for="brazil">Brazil</label>
+            </div>
+
+            <div>
+                <input type="radio" id="censys" name="locB" value="censys">
+                <label for="censys">Censys</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="germany" name="locB" value="germany">
+                <label for="germany">Germany</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="japan" name="locB" value="japan">
+                <label for="japan">Japan</label>
+            </div>
+
+            <div>
+                <input type="radio" id="stanford1" name="locB" value="stanford1">
+                <label for="stanford1">Stanford1</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="stanford64" name="locB"
+                value="stanford64">
+                <label for="stanford64">Stanford64</label>
+            </div>
+
+            </div>
+        </div>
+        </br>
+
+            <center>
+            <label class="textheader" for="diffs">Currently Diffing:</label>
+            <input type="text" id="diffs" readonly style="border:0; color:
+            #f6931f; font-weight:bold;"></br>
+            <label style="width:100px" class="textheader" for="ASN">Hovering
+                over Designation (AS):</label>
+            <input type="text" id="ASN" readonly style="border:0; color:
+            #f6931f; font-weight:bold; width:200px; size:18px"></br></br>
+            
+                <p>Least Different -----> Most Different</p>
+            </div>
+
+            <div id="slider"></div>
+                <div id="smalllegend"></div>
+            <div id="hilbert-chart" class="left"></div>
+            </center>
+            
+            <div id="slash16div" style="display:none">
+            <center>
+            <div id="slider"></div>
+            <label for="slash8">Current /8 being Displayed:</label>
+            <input type="text" id="slash8" readonly style="border:0; color: #f6931f; font-weight:bold;">
+            <div id="hilbert-chart2" class="right"></div>
+            </center>
+            </div>
+
+            <div id="slash24div" style="display:none">
+            <center>
+            <div id="slider"></div>
+            <label class="textheader" for="slash16">Current /16 being Displayed:</label>
+            <input type="text" id="slash16" readonly style="border:0; color: #f6931f; font-weight:bold;">
+            <div id="hilbert-chart3" class="left"></div>
+            </center>
+            </div>
+    
+            <center>
+            <div id="slash32div" style="display:none">
+            <label class="textheader" for="slash24">Current /24 being Displayed:</label>
+            <input type="text" id="slash24" readonly style="border:0; color: #f6931f; font-weight:bold;">
+            <div id="legend"></div>
+            <div id="hilbert-chart4" class="right"></div>
+            </div>
+        </div>
+            </center>
+    </div>
+    <div id="val-tooltip"></div>
+         <script>
+            renderSlider();
+            renderSingleLegend();
+            hilbertDemo("hilbert-chart");
+            hilbertDemo("hilbert-chart2");
+            hilbertDemo("hilbert-chart3");
+            hilbertDemo("hilbert-chart4");
+        </script>
+    </body>
+</html>
+
